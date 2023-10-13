@@ -7,3 +7,8 @@ declare namespace App {
 	// interface Error {}
 	// interface Platform {}
 }
+
+declare module 'surrealdb.wasm' {
+	import { Surreal } from 'surrealdb.wasm/dist/full';
+	export { Surreal };
+}
