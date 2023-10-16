@@ -1,6 +1,10 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar, LightSwitch } from '@skeletonlabs/skeleton';
+	import { AppShell } from '@skeletonlabs/skeleton';
+	import HeaderContents from './HeaderContents.svelte';
+
+	// Font Awesome icons
+	import '@fortawesome/fontawesome-free/js/all.min.js';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
@@ -10,16 +14,9 @@
 
 <!-- App Shell -->
 <AppShell>
+	<!-- Header -->
 	<svelte:fragment slot="header">
-		<!-- App Bar -->
-		<AppBar>
-			<svelte:fragment slot="lead">
-				<strong class="text-xl"><span class="gradient-heading">SurrealDB</span> sandbox</strong>
-			</svelte:fragment>
-			<svelte:fragment slot="trail">
-				<LightSwitch />
-			</svelte:fragment>
-		</AppBar>
+		<HeaderContents />
 	</svelte:fragment>
 	<!-- Page Content -->
 	<slot />
