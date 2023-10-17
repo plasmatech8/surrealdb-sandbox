@@ -213,7 +213,7 @@
 						Query
 					</div>
 					<div class="flex-1 overflow-clip">
-						<CodeEditor on:run={handleRun} bind:value={code} />
+						<CodeEditor on:run={handleRun} on:save={handleSaveButton} bind:value={code} />
 					</div>
 				</div>
 			</Pane>

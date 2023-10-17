@@ -10,7 +10,12 @@
 
 	function handleHotkey(e: KeyboardEvent) {
 		if (e.metaKey && e.key == 'Enter') {
+			e.preventDefault();
 			dispatch('run', value);
+		}
+		if (e.metaKey && e.key == 's') {
+			e.preventDefault();
+			dispatch('save');
 		}
 	}
 </script>
