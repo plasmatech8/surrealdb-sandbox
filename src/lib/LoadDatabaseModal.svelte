@@ -34,8 +34,8 @@ limit 1;
 
 	async function loadSimpleAnimals() {
 		const startCode = `
-create animal:dog content { sound: 'bark!' };
-create animal:cat content { sound: 'meow!' };
+update animal:dog content { sound: 'bark!' };
+update animal:cat content { sound: 'meow!' };
 
 select * from animal;
 `;
