@@ -18,15 +18,19 @@
 			dispatch('save');
 		}
 	}
+
+	const notypecheck = (x: any) => x;
 </script>
 
 <div class="h-full relative overflow-clip" bind:clientHeight bind:clientWidth>
 	<div style="width: {clientWidth}px; height: {clientHeight}px;" class="absolute overflow-auto">
+		<!-- svelte-ignore -->
 		<div
 			style="white-space: pre;"
 			role="textbox"
 			tabindex="0"
 			contenteditable="true"
+			{...notypecheck({ contenteditable: 'plaintext-only' })}
 			bind:innerText={value}
 			class="min-w-[17rem] p-5 pt-2 outline-none h-full"
 			on:keydown={handleHotkey}
