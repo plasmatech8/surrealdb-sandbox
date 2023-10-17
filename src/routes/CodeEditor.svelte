@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Monaco from '$lib/editor/Monaco.svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	export let value: string;
@@ -12,10 +13,12 @@
 	}
 </script>
 
-<textarea
+<!-- <textarea
 	name="code"
 	bind:value
 	on:change
 	class="bg-surface-200-700-toke bg-transparent h-full w-full !border-none !outline-none !ring-0 resize-none"
 	on:keydown={handleRun}
-/>
+/> -->
+
+<Monaco />
