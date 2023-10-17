@@ -13,7 +13,7 @@
 <!-- App Bar -->
 <AppBar>
 	<svelte:fragment slot="lead">
-		<a href="/" class="btn hover:variant-filled-surface">
+		<a href="/" class="btn hover:variant-soft-surface">
 			<strong class="text-xl"><span class="gradient-heading">SurrealDB</span> Sandbox</strong>
 		</a>
 	</svelte:fragment>
