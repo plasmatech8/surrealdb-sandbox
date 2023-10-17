@@ -18,10 +18,11 @@
 <div class="h-full relative overflow-clip" bind:clientHeight bind:clientWidth>
 	<div style="width: {clientWidth}px; height: {clientHeight}px;" class="absolute overflow-auto">
 		<div
+			style="white-space: pre;"
 			role="textbox"
 			tabindex="0"
 			contenteditable="true"
-			bind:textContent={value}
+			bind:innerText={value}
 			class="min-w-[17rem] p-5 pt-2 outline-none h-full"
 			on:keydown={handleRun}
 			placeholder="Write a query here..."

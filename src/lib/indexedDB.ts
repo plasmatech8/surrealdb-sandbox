@@ -1,6 +1,7 @@
 import Dexie, { type Table } from 'dexie';
+import prettyBytes from 'pretty-bytes';
 
-class SaveDatabase extends Dexie {
+class LocalSaveDatabase extends Dexie {
 	public save!: Table<{ id?: number; value: string }>;
 	public constructor() {
 		super('DatabaseSave');
@@ -10,20 +11,34 @@ class SaveDatabase extends Dexie {
 	}
 }
 
-const db = new SaveDatabase();
+const db = new LocalSaveDatabase();
 
-export async function saveData(data: string[]) {
+export async function setLocalSave(data: string[], start: string) {
 	// Log size in bytes
 	const numBytes = new Blob([JSON.stringify(data)]).size;
-	console.info(`Saving ${numBytes / 1_000_000} MB to indexedDB`);
+	console.info(`Saving ${prettyBytes(numBytes)} to indexedDB`);
+
+	// Set local storage info
+	localStorage.setItem('saveSizeBytes', numBytes.toString());
+	localStorage.setItem('saveStartCode', start);
 
 	// Save to indexedDB
 	await db.save.clear();
-	console.log(data);
-	const x = await db.save.bulkAdd(data.map((value) => ({ value })));
-	console.log(x);
+	await db.save.bulkAdd(data.map((value) => ({ value })));
 }
 
-export async function loadData() {
-	return (await db.save.toArray()).map(({ value }) => value);
+export async function getLocalSave() {
+	const data = (await db.save.toArray()).map(({ value }) => value);
+	const start = localStorage.getItem('saveStartCode');
+	return { data, start };
+}
+
+export async function deleteLocalSave() {
+	await db.save.clear();
+	localStorage.removeItem('saveSizeBytes');
+	localStorage.removeItem('saveStartCode');
+}
+
+export function getLocalSaveSize(): number | null {
+	return parseInt(localStorage.getItem('saveSizeBytes') ?? '');
 }

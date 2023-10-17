@@ -2,11 +2,11 @@
 	import { onMount } from 'svelte';
 	import CodeEditor from './CodeEditor.svelte';
 	import type { Surreal } from 'surrealdb.wasm';
-	import exampleCode from '$lib/examples/surreal_deal_v1.surql?raw';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 	import ResponseViewer from './ResponseViewer.svelte';
 	import { ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
-	import { loadData, saveData } from '$lib/indexedDB';
+	import { setLocalSave } from '$lib/indexedDB';
+	import LoadDatabaseModal from '$lib/LoadDatabaseModal.svelte';
 
 	let modalStore = getModalStore();
 
@@ -14,16 +14,21 @@
 
 	let db: Surreal;
 	let response: string;
-	let code = 'select * from person limit 50;';
+	let code = '';
 	let loading = true;
 
 	let queryHistory: string[] = [];
 
-	onMount(initDatabase);
+	onMount(async () => {
+		loading = true;
+		await initDatabase();
+		loading = false;
+	});
 
 	async function initDatabase() {
-		loading = true;
 		queryHistory = [];
+		code = '';
+		response = '';
 		const { Surreal } = await import('surrealdb.wasm');
 		db = new Surreal();
 		try {
@@ -48,7 +53,6 @@
 		} catch (e) {
 			console.error('ERROR', e);
 		}
-		loading = false;
 	}
 
 	async function handleRun() {
@@ -64,42 +68,57 @@
 	}
 
 	function handleResetButton() {
-		console.log(queryHistory);
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Reset Database',
 			body: 'Clear to empty database?',
-			response: (r: boolean) => r && initDatabase()
+			response: async (r: boolean) => {
+				if (r) {
+					loading = true;
+					await initDatabase();
+					loading = false;
+				}
+			}
 		});
 	}
 
 	async function handleLoadButton() {
-		loading = true;
-		await initDatabase();
-		const save = await loadData();
-		save.forEach((q) => db.query(q, {}));
-		// console.log();
-		// try {
-		// 	await db.query(exampleCode, {});
-		// 	queryHistory.push(exampleCode);
-		// 	alert('done');
-		// } catch (error) {
-		// 	alert(error);
-		// }
-		loading = false;
+		modalStore.trigger({
+			type: 'component',
+			component: {
+				ref: LoadDatabaseModal
+			},
+			response: async (state: { data: string[]; start: string } | undefined) => {
+				if (state) {
+					loading = true;
+					await new Promise((r) => setTimeout(r, 800));
+					await initDatabase();
+					try {
+						code = state.start;
+						for (const q of state.data) {
+							queryHistory.push(q);
+							await db.query(q, {});
+						}
+						alert('Loaded data');
+					} catch (error) {
+						alert(error);
+						await initDatabase();
+					}
+					loading = false;
+				}
+			}
+		});
 	}
 
 	async function handleSaveButton() {
 		modalStore.trigger({
 			type: 'confirm',
-			// Data
 			title: 'Save Database',
 			body: 'Overwrite existing save?',
-			// TRUE if confirm pressed, FALSE if cancel pressed
 			response: async (r: boolean) => {
 				if (r) {
 					loading = true;
-					await saveData(queryHistory);
+					await setLocalSave(queryHistory, code);
 					loading = false;
 				}
 			}
@@ -137,7 +156,7 @@
 		</button>
 	</div>
 	<!-- Code/Response section -->
-	<div class="relative flex-1" class:pointer-events-none={loading} class:opacity-70={loading}>
+	<div class="relative flex-1" class:pointer-events-none={loading} class:opacity-50={loading}>
 		{#if loading}
 			<div class="absolute top-0 left-0 w-full h-full grid place-items-center z-50">
 				<ProgressRadial stroke={100} meter="stroke-secondary-500" />
