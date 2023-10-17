@@ -57,7 +57,27 @@
 </script>
 
 <div class="flex flex-col gap-5 p-5 h-full overflow-hidden">
-	<button on:click={loadExample}>Load Surreal_Deal Example</button>
+	<!-- Toolbar -->
+	<div class="flex gap-3">
+		<button class="btn gap-3 variant-soft-secondary mr-auto">
+			<i class="fas fa-bolt" />
+			Run Query
+		</button>
+
+		<button class="btn gap-3 variant-soft-secondary">
+			<i class="fas fa-arrow-rotate-left" />
+			Reset
+		</button>
+		<button class="btn gap-3 variant-soft-secondary">
+			<i class="fas fa-file-arrow-down" />
+			Load
+		</button>
+		<button class="btn gap-3 variant-soft-secondary">
+			<i class="fas fa-floppy-disk" />
+			Save
+		</button>
+	</div>
+	<!-- Code/Response section -->
 	<Splitpanes class="flex-1 rounded-xl overflow-hidden">
 		<Pane minSize={20}>
 			<CodeEditor on:run={handleRun} bind:value={code} />
