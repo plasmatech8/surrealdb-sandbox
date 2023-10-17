@@ -41,6 +41,7 @@
 	"dependencies": {
 		"@floating-ui/dom": "1.5.3",
 		"@fortawesome/fontawesome-free": "^6.4.2",
-		"surrealdb.wasm": "^0.7.0"
+		"surrealdb.wasm": "^0.7.0",
+		"svelte-splitpanes": "^0.8.0"
 	}
 }

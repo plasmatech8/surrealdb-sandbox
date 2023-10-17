@@ -8,7 +8,28 @@ body {
 	@apply h-full overflow-hidden;
 }
 
-
+/*
+ * Gradient heading
+ */
 .gradient-heading {
-	@apply bg-gradient-to-br from-pink-500 to-violet-500 bg-clip-text text-transparent box-decoration-clone
+	@apply bg-gradient-to-br from-pink-500 to-violet-500 bg-clip-text text-transparent box-decoration-clone;
+}
+
+/*
+ * Split panes
+ */
+.splitpanes__pane {
+	@apply !bg-slate-50 dark:!bg-slate-900;
+}
+
+.splitpanes__splitter {
+	@apply !bg-slate-200 dark:!bg-slate-800 !border-slate-300 dark:!border-slate-700;
+}
+
+.splitpanes__splitter:before {
+	@apply !bg-purple-500 opacity-70;
+}
+
+.splitpanes__splitter:after {
+	@apply !bg-purple-500 opacity-70;
 }

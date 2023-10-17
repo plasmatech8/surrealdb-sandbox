@@ -3,6 +3,7 @@
 	import CodeEditor from './CodeEditor.svelte';
 	import type { Surreal } from 'surrealdb.wasm';
 	import exampleCode from '$lib/examples/surreal_deal_v1.surql?raw';
+	import { Pane, Splitpanes } from 'svelte-splitpanes';
 
 	let db: Surreal;
 	let response: string;
@@ -54,19 +55,20 @@
 	}
 </script>
 
-<div class="flex flex-col lg:flex-row gap-5 p-3 h-full overflow-hidden">
-	<div class="bg-surface-300-600-token flex-[3] rounded-lg">
-		<CodeEditor on:run={handleRun} bind:value={code} />
-	</div>
-	<div class="bg-surface-300-600-token flex-[2] rounded-lg p-3 overflow-auto">
-		<button on:click={loadExample}>Load Surreal_Deal Example</button>
-
-		{#if response}
-			<pre>{response}</pre>
-		{:else}
-			<div class="w-full h-full grid place-items-center overflow-auto">
-				<span class="opacity-50">No Response</span>
-			</div>
-		{/if}
-	</div>
+<div class="flex flex-col gap-5 p-5 h-full overflow-hidden">
+	<button on:click={loadExample}>Load Surreal_Deal Example</button>
+	<Splitpanes style="height: 400px" class="flex-1 rounded-xl overflow-hidden">
+		<Pane minSize={20}>
+			<CodeEditor on:run={handleRun} bind:value={code} />
+		</Pane>
+		<Pane>
+			{#if response}
+				<pre>{response}</pre>
+			{:else}
+				<div class="w-full h-full grid place-items-center overflow-auto">
+					<span class="opacity-50">No Response</span>
+				</div>
+			{/if}
+		</Pane>
+	</Splitpanes>
 </div>
