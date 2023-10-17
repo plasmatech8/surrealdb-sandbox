@@ -3,6 +3,9 @@
 
 	export let value: string;
 
+	let clientHeight: number;
+	let clientWidth: number;
+
 	const dispatch = createEventDispatcher();
 
 	function handleRun(e: KeyboardEvent) {
@@ -12,10 +15,15 @@
 	}
 </script>
 
-<textarea
-	name="code"
-	bind:value
-	on:change
-	class="bg-surface-200-700-toke bg-transparent h-full w-full !border-none !outline-none !ring-0 resize-none"
-	on:keydown={handleRun}
-/>
+<div class="h-full relative overflow-clip" bind:clientHeight bind:clientWidth>
+	<div style="width: {clientWidth}px; height: {clientHeight}px;" class="absolute overflow-auto">
+		<div
+			role="textbox"
+			tabindex="0"
+			contenteditable="true"
+			bind:textContent={value}
+			class="min-w-[30rem] p-5 pt-2 outline-none h-full"
+			on:keydown={handleRun}
+		/>
+	</div>
+</div>

@@ -1,16 +1,14 @@
 <script lang="ts">
 	export let value: string;
+
+	let clientHeight: number;
+	let clientWidth: number;
 </script>
 
-{#if value}
-	<textarea
-		name="result"
-		readonly
-		bind:value
-		class="bg-surface-200-700-toke bg-transparent h-full w-full min-w-[50rem] !border-none !outline-none !ring-0 resize-none"
-	/>
-{:else}
-	<div class="w-full h-full grid place-items-center overflow-auto">
-		<span class="opacity-50 whitespace-nowrap">No Response</span>
+<div class="h-full relative overflow-clip" bind:clientHeight bind:clientWidth>
+	<div style="width: {clientWidth}px; height: {clientHeight}px;" class="absolute overflow-auto">
+		<div class="min-w-[30rem] p-5 pt-2">
+			{value}
+		</div>
 	</div>
-{/if}
+</div>
