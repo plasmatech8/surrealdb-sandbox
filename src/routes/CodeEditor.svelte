@@ -10,13 +10,15 @@
 	const dispatch = createEventDispatcher();
 
 	function handleHotkey(e: KeyboardEvent) {
-		if (e.metaKey && e.key == 'Enter') {
-			e.preventDefault();
-			dispatch('run', value);
-		}
-		if (e.metaKey && e.key == 's') {
-			e.preventDefault();
-			dispatch('save');
+		if (e.ctrlKey || e.metaKey) {
+			if (e.key == 'Enter') {
+				e.preventDefault();
+				dispatch('run', value);
+			}
+			if (e.key == 's') {
+				e.preventDefault();
+				dispatch('save');
+			}
 		}
 		if (e.shiftKey && e.key == 'Tab') {
 			e.preventDefault();
