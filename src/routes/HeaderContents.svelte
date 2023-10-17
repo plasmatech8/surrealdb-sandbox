@@ -1,13 +1,7 @@
 <script lang="ts">
-	import { AppBar, LightSwitch, popup, type PopupSettings } from '@skeletonlabs/skeleton';
-
-	let menuPopupSettings: PopupSettings = {
-		event: 'click',
-		target: 'menuPopup',
-		middleware: {
-			offset: 20
-		}
-	};
+	import { AppBar, LightSwitch } from '@skeletonlabs/skeleton';
+	import pjson from '../../package.json?raw';
+	const { version } = JSON.parse(pjson);
 </script>
 
 <!-- App Bar -->
@@ -16,6 +10,9 @@
 		<a href="/" class="btn hover:variant-soft-surface">
 			<strong class="text-xl"><span class="gradient-heading">SurrealDB</span> Sandbox</strong>
 		</a>
+		<span class="text-sm opacity-20 ml-3">
+			{version}
+		</span>
 	</svelte:fragment>
 	<svelte:fragment slot="trail">
 		<LightSwitch />
