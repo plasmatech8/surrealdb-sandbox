@@ -4,11 +4,12 @@
 	import type { Surreal } from 'surrealdb.wasm';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 	import ResponseViewer from './ResponseViewer.svelte';
-	import { ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
+	import { ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { setLocalSave } from '$lib/localDatabaseSave';
 	import LoadDatabaseModal from '$lib/LoadDatabaseModal.svelte';
 
 	let modalStore = getModalStore();
+	let toastStore = getToastStore();
 
 	let pageWidth: number;
 
@@ -18,6 +19,23 @@
 	let loading = true;
 
 	let queryHistory: string[] = [];
+	let codeContainerEl: HTMLDivElement;
+
+	function triggerSuccessToast(message: string) {
+		toastStore.trigger({
+			message: `<i class="far fa-circle-check mr-1"></i> ${message}`,
+			background: 'variant-filled-success',
+			classes: 'pl-8'
+		});
+	}
+
+	function triggerErrorToast(message: string) {
+		toastStore.trigger({
+			message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${message}`,
+			background: 'variant-filled-error',
+			classes: 'pl-8'
+		});
+	}
 
 	onMount(async () => {
 		loading = true;
@@ -25,7 +43,7 @@
 		loading = false;
 	});
 
-	async function initDatabase() {
+	async function initDatabase(successCallback: () => void = () => {}) {
 		queryHistory = [];
 		code = '';
 		response = '';
@@ -50,19 +68,30 @@
 			console.log('Instantiated SurrealDB with version: ' + version);
 			// Select a specific namespace / database
 			await db.use({ ns: 'test', db: 'test' });
+			successCallback();
 		} catch (e) {
-			console.error('ERROR', e);
+			console.error(e);
+			triggerErrorToast('Sorry, there was a problem initializing the database...');
 		}
 	}
 
 	async function handleRun() {
 		loading = true;
 		try {
+			await new Promise((r) => setTimeout(r, 10));
 			const resp = await db.query(code, {});
 			response = JSON.stringify(resp, null, 4);
 			queryHistory.push(code);
 		} catch (error) {
-			alert(error);
+			console.log(error);
+			if (error instanceof Error) {
+				triggerErrorToast(error.message);
+			} else if (typeof error === 'string') {
+				triggerErrorToast(error);
+			} else {
+				console.error(error);
+				triggerErrorToast('Something went wrong in the query.');
+			}
 		}
 		loading = false;
 	}
@@ -75,7 +104,7 @@
 			response: async (r: boolean) => {
 				if (r) {
 					loading = true;
-					await initDatabase();
+					await initDatabase(() => triggerSuccessToast('Database reset!'));
 					loading = false;
 				}
 			}
@@ -99,10 +128,12 @@
 							queryHistory.push(q);
 							await db.query(q, {});
 						}
-						alert('Loaded data');
+						triggerSuccessToast('Database loaded!');
 					} catch (error) {
-						alert(error);
+						console.error(error);
+						triggerErrorToast('Sorry, there was a problem loading the data...');
 						await initDatabase();
+						triggerSuccessToast('Database reset!');
 					}
 					loading = false;
 				}
@@ -114,11 +145,17 @@
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Save Database',
-			body: 'Overwrite existing save?',
+			body: 'Overwrite existing local save?',
 			response: async (r: boolean) => {
 				if (r) {
 					loading = true;
-					await setLocalSave(queryHistory, code);
+					try {
+						await setLocalSave(queryHistory, code);
+						triggerSuccessToast('Database saved!');
+					} catch (error) {
+						console.error(error);
+						triggerErrorToast('Failed to save database.');
+					}
 					loading = false;
 				}
 			}
@@ -156,7 +193,12 @@
 		</button>
 	</div>
 	<!-- Code/Response section -->
-	<div class="relative flex-1" class:pointer-events-none={loading} class:opacity-50={loading}>
+	<div
+		class="relative flex-1 transition-opacity"
+		class:pointer-events-none={loading}
+		class:opacity-50={loading}
+		bind:this={codeContainerEl}
+	>
 		{#if loading}
 			<div class="absolute top-0 left-0 w-full h-full grid place-items-center z-50">
 				<ProgressRadial stroke={100} meter="stroke-secondary-500" />

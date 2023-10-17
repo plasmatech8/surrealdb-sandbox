@@ -26,6 +26,6 @@
 	<slot />
 </AppShell>
 
-<Toast />
+<Toast position="br" />
 
 <Modal />

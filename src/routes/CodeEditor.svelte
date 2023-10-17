@@ -8,7 +8,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	function handleRun(e: KeyboardEvent) {
+	function handleHotkey(e: KeyboardEvent) {
 		if (e.metaKey && e.key == 'Enter') {
 			dispatch('run', value);
 		}
@@ -24,7 +24,7 @@
 			contenteditable="true"
 			bind:innerText={value}
 			class="min-w-[17rem] p-5 pt-2 outline-none h-full"
-			on:keydown={handleRun}
+			on:keydown={handleHotkey}
 			placeholder="Write a query here..."
 		/>
 	</div>
