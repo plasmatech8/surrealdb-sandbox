@@ -14,7 +14,7 @@
 <AppBar>
 	<svelte:fragment slot="lead">
 		<a href="/" class="btn hover:variant-filled-surface">
-			<strong class="text-xl"><span class="gradient-heading">SurrealDB</span> sandbox</strong>
+			<strong class="text-xl"><span class="gradient-heading">SurrealDB</span> Sandbox</strong>
 		</a>
 	</svelte:fragment>
 	<svelte:fragment slot="trail">
