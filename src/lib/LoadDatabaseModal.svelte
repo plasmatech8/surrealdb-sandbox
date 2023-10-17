@@ -32,6 +32,20 @@ limit 1;
 		modalStore.close();
 	}
 
+	async function loadSimpleAnimals() {
+		const startCode = `
+create animal:dog content { sound: 'bark!' };
+create animal:cat content { sound: 'meow!' };
+
+select * from animal;
+`;
+		$modalStore[0].response?.({
+			data: [],
+			start: startCode
+		});
+		modalStore.close();
+	}
+
 	async function onDeleteLocalSave() {
 		await deleteLocalSave();
 		nonce += 1;
@@ -70,6 +84,11 @@ limit 1;
 					SurrealDB docs
 				</a>
 			</span>
+		</div>
+		<div>
+			<button class="btn variant-soft-secondary" on:click={loadSimpleAnimals}>
+				Simple Animals Demo</button
+			>
 		</div>
 	</div>
 </div>
