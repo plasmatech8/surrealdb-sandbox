@@ -4,6 +4,7 @@
 	import type { Surreal } from 'surrealdb.wasm';
 	import exampleCode from '$lib/examples/surreal_deal_v1.surql?raw';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
+	import ResponseViewer from './ResponseViewer.svelte';
 
 	let db: Surreal;
 	let response: string;
@@ -57,18 +58,12 @@
 
 <div class="flex flex-col gap-5 p-5 h-full overflow-hidden">
 	<button on:click={loadExample}>Load Surreal_Deal Example</button>
-	<Splitpanes style="height: 400px" class="flex-1 rounded-xl overflow-hidden">
+	<Splitpanes class="flex-1 rounded-xl overflow-hidden">
 		<Pane minSize={20}>
 			<CodeEditor on:run={handleRun} bind:value={code} />
 		</Pane>
 		<Pane>
-			{#if response}
-				<pre>{response}</pre>
-			{:else}
-				<div class="w-full h-full grid place-items-center overflow-auto">
-					<span class="opacity-50">No Response</span>
-				</div>
-			{/if}
+			<ResponseViewer value={response} />
 		</Pane>
 	</Splitpanes>
 </div>
