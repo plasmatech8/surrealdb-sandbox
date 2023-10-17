@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getModalStore } from '@skeletonlabs/skeleton';
-	import { deleteLocalSave, getLocalSaveSize, getLocalSave } from './indexedDB';
+	import { deleteLocalSave, getLocalSaveSize, getLocalSave } from './localDatabaseSave';
 	import { browser } from '$app/environment';
 	import prettyBytes from 'pretty-bytes';
 	import surrealDeal from '$lib/examples/surreal_deal_v1.surql?raw';

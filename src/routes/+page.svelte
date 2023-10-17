@@ -5,7 +5,7 @@
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 	import ResponseViewer from './ResponseViewer.svelte';
 	import { ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
-	import { setLocalSave } from '$lib/indexedDB';
+	import { setLocalSave } from '$lib/localDatabaseSave';
 	import LoadDatabaseModal from '$lib/LoadDatabaseModal.svelte';
 
 	let modalStore = getModalStore();
