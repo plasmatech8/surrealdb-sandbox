@@ -24,6 +24,18 @@
 			bind:textContent={value}
 			class="min-w-[30rem] p-5 pt-2 outline-none h-full"
 			on:keydown={handleRun}
+			placeholder="Write a query here..."
 		/>
 	</div>
 </div>
+
+<style>
+	[placeholder]:empty::before {
+		content: attr(placeholder);
+		opacity: 30%;
+	}
+
+	[placeholder]:empty:focus::before {
+		content: '';
+	}
+</style>

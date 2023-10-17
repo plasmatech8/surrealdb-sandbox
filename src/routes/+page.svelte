@@ -85,7 +85,7 @@
 					<i class="fas fa-terminal opacity-50" />
 					Query
 				</div>
-				<div class="flex-1 overflow-auto">
+				<div class="flex-1 overflow-clip">
 					<CodeEditor on:run={handleRun} bind:value={code} />
 				</div>
 			</div>
@@ -96,7 +96,7 @@
 					<i class="fas fa-database opacity-50" />
 					Response
 				</div>
-				<div class="flex-1">
+				<div class="flex-1 overflow-clip">
 					<ResponseViewer value={response} />
 				</div>
 			</div>
