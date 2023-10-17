@@ -81,7 +81,7 @@
 			await new Promise((r) => setTimeout(r, 10));
 			const resp = await db.query(code, {});
 			response = JSON.stringify(resp, null, 4);
-			queryHistory.push(code);
+			queryHistory = [...queryHistory, code];
 		} catch (error) {
 			console.log(error);
 			if (error instanceof Error) {
@@ -128,6 +128,7 @@
 							queryHistory.push(q);
 							await db.query(q, {});
 						}
+						queryHistory = queryHistory;
 						triggerSuccessToast('Database loaded!');
 					} catch (error) {
 						console.error(error);
@@ -166,13 +167,11 @@
 <div class="flex flex-col gap-5 p-5 h-full overflow-hidden" bind:clientWidth={pageWidth}>
 	<!-- Toolbar -->
 	<div class="flex gap-3 overflow-auto">
-		<button
-			class="btn gap-3 variant-soft-secondary mr-auto"
-			on:click={handleRun}
-			disabled={loading}
-		>
-			<i class="fas fa-bolt w-4" />
-			Run Query
+		<button class="btn variant-soft-secondary mr-auto" on:click={handleRun} disabled={loading}>
+			<i class="fas fa-bolt w-4 mr-1" />
+			<span>Run <span class="hidden sm:inline">Query</span></span>
+			<span class="opacity-50"> · </span>
+			<span class="opacity-50">{queryHistory.length}</span>
 		</button>
 
 		<button
