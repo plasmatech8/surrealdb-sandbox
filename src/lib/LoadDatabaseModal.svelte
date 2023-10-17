@@ -16,7 +16,19 @@
 	}
 
 	async function loadSurrealDeal() {
-		$modalStore[0].response?.({ data: [surrealDeal], start: 'select * from person limit 10;' });
+		const startCode = `
+select
+    *,
+     ->order.* as orders,
+     ->order->product.* as orders.products,
+    (select *, product.* from review where person = $parent.id) as reviews
+from person
+limit 1;
+`;
+		$modalStore[0].response?.({
+			data: [surrealDeal],
+			start: startCode
+		});
 		modalStore.close();
 	}
 
