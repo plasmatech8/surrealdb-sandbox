@@ -24,7 +24,7 @@
 	function triggerSuccessToast(message: string) {
 		toastStore.trigger({
 			message: `<i class="far fa-circle-check mr-1"></i> ${message}`,
-			background: 'variant-filled-success',
+			background: 'variant-filled-secondary',
 			classes: 'pl-8'
 		});
 	}
