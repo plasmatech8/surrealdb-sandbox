@@ -6,6 +6,8 @@
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 	import ResponseViewer from './ResponseViewer.svelte';
 
+	let pageWidth: number;
+
 	let db: Surreal;
 	let response: string;
 	let code = 'select * from person;';
@@ -56,9 +58,9 @@
 	}
 </script>
 
-<div class="flex flex-col gap-5 p-5 h-full overflow-hidden">
+<div class="flex flex-col gap-5 p-5 h-full overflow-hidden" bind:clientWidth={pageWidth}>
 	<!-- Toolbar -->
-	<div class="flex gap-3">
+	<div class="flex gap-3 overflow-auto">
 		<button class="btn gap-3 variant-soft-secondary mr-auto" on:click={handleRun}>
 			<i class="fas fa-bolt" />
 			Run Query
@@ -66,19 +68,19 @@
 
 		<button class="btn gap-3 variant-soft-secondary">
 			<i class="fas fa-arrow-rotate-left" />
-			Reset
+			<span class="hidden sm:inline">Reset</span>
 		</button>
 		<button class="btn gap-3 variant-soft-secondary" on:click={loadExample}>
 			<i class="fas fa-file-arrow-down" />
-			Load
+			<span class="hidden sm:inline">Load</span>
 		</button>
 		<button class="btn gap-3 variant-soft-secondary">
 			<i class="fas fa-floppy-disk" />
-			Save
+			<span class="hidden sm:inline">Save</span>
 		</button>
 	</div>
 	<!-- Code/Response section -->
-	<Splitpanes class="flex-1 rounded-xl overflow-hidden">
+	<Splitpanes class="flex-1 rounded-xl overflow-hidden" horizontal={pageWidth < 640}>
 		<Pane minSize={20}>
 			<div class="h-full w-full flex flex-col">
 				<div class="p-4 pb-1 flex gap-3 font-semibold text-lg items-center">

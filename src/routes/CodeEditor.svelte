@@ -22,7 +22,7 @@
 			tabindex="0"
 			contenteditable="true"
 			bind:textContent={value}
-			class="min-w-[30rem] p-5 pt-2 outline-none h-full"
+			class="min-w-[17rem] p-5 pt-2 outline-none h-full"
 			on:keydown={handleRun}
 			placeholder="Write a query here..."
 		/>

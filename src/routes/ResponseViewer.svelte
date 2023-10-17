@@ -8,7 +8,7 @@
 <div class="h-full w-full relative overflow-clip" bind:clientHeight bind:clientWidth>
 	<div style="width: {clientWidth}px; height: {clientHeight}px;" class="absolute overflow-auto">
 		{#if value}
-			<div class="min-w-[30rem] p-5 pt-2 text-sm">
+			<div class="min-w-[17rem] p-5 pt-2 text-sm">
 				<pre>{value}</pre>
 			</div>
 		{:else}
