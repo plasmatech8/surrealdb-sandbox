@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, Modal, Toast } from '@skeletonlabs/skeleton';
+	import { AppShell, Modal, Toast, modeCurrent } from '@skeletonlabs/skeleton';
 	import HeaderContents from './HeaderContents.svelte';
 
 	// Font Awesome icons
@@ -29,3 +29,14 @@
 <Toast position="br" />
 
 <Modal />
+
+<!-- Handle dark/light color for highlight.js -->
+{#if $modeCurrent}
+	<style lang="postcss" global>
+		@import 'highlight.js/styles/github.css';
+	</style>
+{:else}
+	<style lang="postcss" global>
+		@import 'highlight.js/styles/github-dark.css';
+	</style>
+{/if}

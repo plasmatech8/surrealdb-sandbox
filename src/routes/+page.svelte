@@ -136,7 +136,7 @@
 						console.error(error);
 						triggerErrorToast('Sorry, there was a problem loading the data...');
 						await initDatabase();
-						triggerSuccessToast('Database reset!');
+						triggerErrorToast('Database reset!');
 					}
 					loading = false;
 				}
