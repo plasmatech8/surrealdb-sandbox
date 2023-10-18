@@ -53,8 +53,8 @@ select * from animal;
 
 <div class="card px-10 py-6 w-modal">
 	<div class="flex flex-col gap-5">
-		<header class="text-3xl">Load Data</header>
-		<div class="text-lg font-semibold">Local Database Save</div>
+		<header class="text-3xl">Load Database</header>
+		<div class="text-lg font-semibold">Local Save</div>
 		<div class="flex gap-10">
 			{#key nonce}
 				{#if browser}

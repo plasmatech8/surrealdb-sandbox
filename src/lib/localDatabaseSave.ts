@@ -26,7 +26,6 @@ export async function setLocalSave(history: string[], editors: string[]) {
 	localStorage.setItem('localSaveBytesSize', prettyBytes(totalBytesSize));
 
 	// Save history & editors to indexedDB
-	console.log('???');
 	await db.history.clear();
 	await db.editors.clear();
 	await db.history.bulkAdd(history.map((value) => ({ value })));

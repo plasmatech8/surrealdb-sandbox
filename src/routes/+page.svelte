@@ -1,26 +1,26 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import CodeEditor from './CodeEditor.svelte';
 	import type { Surreal } from 'surrealdb.wasm';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
-	import ResponseViewer from './ResponseViewer.svelte';
 	import { ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { setLocalSave } from '$lib/localDatabaseSave';
 	import LoadDatabaseModal from '$lib/LoadDatabaseModal.svelte';
-	import { browser } from '$app/environment';
+	import ResponseSection from './ResponseSection.svelte';
+	import QuerySection from './QuerySection.svelte';
 
 	let modalStore = getModalStore();
 	let toastStore = getToastStore();
 
 	let pageWidth: number;
+	let sandboxContainerEl: HTMLDivElement;
 
 	let db: Surreal;
 	let response: string;
-	let code = '';
 	let loading = true;
 
-	let queryHistory: string[] = [];
-	let codeContainerEl: HTMLDivElement;
+	let history: string[] = [];
+	let editors: string[] = [''];
+	let editorIdx = 0;
 
 	function triggerSuccessToast(message: string) {
 		toastStore.trigger({
@@ -45,8 +45,8 @@
 	});
 
 	async function initDatabase(successCallback: () => void = () => {}) {
-		queryHistory = [];
-		code = '';
+		history = [];
+		editors = [''];
 		response = '';
 		const { Surreal } = await import('surrealdb.wasm');
 		db = new Surreal();
@@ -66,7 +66,7 @@
 				}
 			});
 			const version = await db.version();
-			console.log('Instantiated SurrealDB with version: ' + version);
+			console.log('Initialized SurrealDB with version: ' + version);
 			// Select a specific namespace / database
 			await db.use({ ns: 'test', db: 'test' });
 			successCallback();
@@ -80,9 +80,10 @@
 		loading = true;
 		try {
 			await new Promise((r) => setTimeout(r, 10));
+			const code = editors[editorIdx];
 			const resp = await db.query(code, {});
 			response = JSON.stringify(resp, null, 4);
-			queryHistory = [...queryHistory, code];
+			history = [...history, code];
 		} catch (error) {
 			console.log(error);
 			if (error instanceof Error) {
@@ -118,18 +119,18 @@
 			component: {
 				ref: LoadDatabaseModal
 			},
-			response: async (state: { history: string[]; editors: string[] } | undefined) => {
-				if (state) {
+			response: async (snapshot: { history: string[]; editors: string[] } | undefined) => {
+				if (snapshot) {
 					loading = true;
 					await new Promise((r) => setTimeout(r, 800));
 					await initDatabase();
 					try {
-						code = state.editors[0];
-						for (const q of state.history) {
-							queryHistory.push(q);
+						editors = snapshot.editors;
+						for (const q of snapshot.history) {
+							history.push(q);
 							await db.query(q, {});
 						}
-						queryHistory = queryHistory;
+						history = history;
 						triggerSuccessToast('Database loaded!');
 					} catch (error) {
 						console.error(error);
@@ -147,12 +148,13 @@
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Save Database',
-			body: 'Overwrite existing local save?',
+			body: 'Overwrite existing local save snapshot?',
 			response: async (r: boolean) => {
 				if (r) {
 					loading = true;
 					try {
-						await setLocalSave(queryHistory, [code]);
+						const code = editors[editorIdx];
+						await setLocalSave(history, [code]);
 						triggerSuccessToast('Database saved!');
 					} catch (error) {
 						console.error(error);
@@ -163,28 +165,6 @@
 			}
 		});
 	}
-
-	function getOS() {
-		let os = null;
-		if (browser) {
-			let userAgent = window.navigator.userAgent.toLowerCase(),
-				macosPlatforms = /(macintosh|macintel|macppc|mac68k|macos)/i,
-				windowsPlatforms = /(win32|win64|windows|wince)/i,
-				iosPlatforms = /(iphone|ipad|ipod)/i;
-			if (macosPlatforms.test(userAgent)) {
-				os = 'macos';
-			} else if (iosPlatforms.test(userAgent)) {
-				os = 'ios';
-			} else if (windowsPlatforms.test(userAgent)) {
-				os = 'windows';
-			} else if (/android/.test(userAgent)) {
-				os = 'android';
-			} else if (!os && /linux/.test(userAgent)) {
-				os = 'linux';
-			}
-		}
-		return os;
-	}
 </script>
 
 <div class="flex flex-col gap-5 p-5 h-full overflow-hidden" bind:clientWidth={pageWidth}>
@@ -194,7 +174,7 @@
 			<i class="fas fa-bolt w-4 mr-1" />
 			<span>Run <span class="hidden sm:inline">Query</span></span>
 			<span class="opacity-50"> · </span>
-			<span class="opacity-50">{queryHistory.length}</span>
+			<span class="opacity-50">{history.length}</span>
 		</button>
 
 		<button
@@ -219,7 +199,7 @@
 		class="relative flex-1 transition-opacity"
 		class:pointer-events-none={loading}
 		class:opacity-50={loading}
-		bind:this={codeContainerEl}
+		bind:this={sandboxContainerEl}
 	>
 		{#if loading}
 			<div class="absolute top-0 left-0 w-full h-full grid place-items-center z-50">
@@ -229,37 +209,10 @@
 
 		<Splitpanes class="rounded-xl overflow-hidden" horizontal={pageWidth < 640}>
 			<Pane minSize={20}>
-				<div class="h-full w-full flex flex-col">
-					<div class="flex justify-between">
-						<div class="p-4 pb-1 flex gap-4 font-semibold text-lg items-center">
-							<i class="fas fa-terminal opacity-50 w-5" />
-							Query
-						</div>
-						<div class="opacity-20 p-4 text-sm font-semibold">
-							{#if ['macos', 'ios'].includes(getOS() ?? '')}
-								<kbd class="kbd text-xs">⌘</kbd> +
-								<kbd class="kbd text-xs">return</kbd>
-							{:else}
-								<kbd class="kbd text-xs">ctrl</kbd> +
-								<kbd class="kbd text-xs">enter</kbd>
-							{/if}
-						</div>
-					</div>
-					<div class="flex-1 overflow-clip">
-						<CodeEditor on:run={handleRun} on:save={handleSaveButton} bind:value={code} />
-					</div>
-				</div>
+				<QuerySection {editors} {editorIdx} on:run={handleRun} on:save={handleSaveButton} />
 			</Pane>
 			<Pane>
-				<div class="w-full h-full flex flex-col !max-h-full">
-					<div class="p-4 pb-1 flex gap-4 font-semibold text-lg items-center min-w-[10rem]">
-						<i class="fas fa-database opacity-50 w-5" />
-						Response
-					</div>
-					<div class="flex-1 overflow-clip">
-						<ResponseViewer value={response} />
-					</div>
-				</div>
+				<ResponseSection {response} />
 			</Pane>
 		</Splitpanes>
 	</div>
