@@ -167,6 +167,14 @@
 	}
 </script>
 
+<svelte:head>
+	<title>SurrealDB Sandbox</title>
+	<meta
+		name="surrealdb-sandbox"
+		content="Explore SurrealDB/SurrealQL in your browser. This online playground offers a query code editor and response viewer. It allows you to effortlessly test queries in a browser sandbox and experiment with your ideas."
+	/>
+</svelte:head>
+
 <div class="flex flex-col gap-5 p-5 h-full overflow-hidden" bind:clientWidth={pageWidth}>
 	<!-- Toolbar -->
 	<div class="flex gap-3 overflow-auto">
