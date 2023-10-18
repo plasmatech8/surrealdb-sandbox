@@ -2,7 +2,6 @@
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { deleteLocalSave, getLocalSaveSize, getLocalSave } from './localDatabaseSave';
 	import { browser } from '$app/environment';
-	import prettyBytes from 'pretty-bytes';
 	import surrealDeal from '$lib/examples/surreal_deal_v1.surql?raw';
 
 	const modalStore = getModalStore();
@@ -10,8 +9,8 @@
 	let nonce = 0;
 
 	async function loadLocalSave() {
-		const { data, start } = await getLocalSave();
-		$modalStore[0].response?.({ data, start });
+		const { history, editors } = await getLocalSave();
+		$modalStore[0].response?.({ history, editors });
 		modalStore.close();
 	}
 
@@ -26,8 +25,8 @@ from person
 limit 1;
 `;
 		$modalStore[0].response?.({
-			data: [surrealDeal],
-			start: startCode
+			history: [surrealDeal],
+			editors: [startCode]
 		});
 		modalStore.close();
 	}
@@ -40,8 +39,8 @@ update animal:cat content { sound: 'meow!' };
 select * from animal;
 `;
 		$modalStore[0].response?.({
-			data: [],
-			start: startCode
+			history: [],
+			editors: [startCode]
 		});
 		modalStore.close();
 	}
@@ -62,7 +61,7 @@ select * from animal;
 					{@const size = getLocalSaveSize()}
 					<button class="btn variant-soft-secondary" on:click={loadLocalSave} disabled={!size}>
 						{#if size}
-							Size: {prettyBytes(size)}
+							Size: {size}
 						{:else}
 							No Save
 						{/if}

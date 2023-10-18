@@ -2,43 +2,49 @@ import Dexie, { type Table } from 'dexie';
 import prettyBytes from 'pretty-bytes';
 
 class LocalSaveDatabase extends Dexie {
-	public save!: Table<{ id?: number; value: string }>;
+	public history!: Table<{ id?: number; value: string }>;
+	public editors!: Table<{ id?: number; value: string }>;
 	public constructor() {
 		super('DatabaseSave');
 		this.version(1).stores({
-			save: '++id, value'
+			history: '++id, value',
+			editors: '++id, value'
 		});
 	}
 }
 
 const db = new LocalSaveDatabase();
 
-export async function setLocalSave(data: string[], start: string) {
+export async function setLocalSave(history: string[], editors: string[]) {
 	// Log size in bytes
-	const numBytes = new Blob([JSON.stringify(data)]).size;
-	console.info(`Saving ${prettyBytes(numBytes)} to indexedDB`);
+	const historyBytesSize = new Blob([JSON.stringify(history)]).size;
+	const editorsByteSize = new Blob([JSON.stringify(editors)]).size;
+	const totalBytesSize = historyBytesSize + editorsByteSize;
+	console.info(`Saving ${prettyBytes(totalBytesSize)} to indexedDB`);
 
-	// Set local storage info
-	localStorage.setItem('saveSizeBytes', numBytes.toString());
-	localStorage.setItem('saveStartCode', start);
+	// Store size of save in local storage
+	localStorage.setItem('localSaveBytesSize', prettyBytes(totalBytesSize));
 
-	// Save to indexedDB
-	await db.save.clear();
-	await db.save.bulkAdd(data.map((value) => ({ value })));
+	// Save history & editors to indexedDB
+	console.log('???');
+	await db.history.clear();
+	await db.editors.clear();
+	await db.history.bulkAdd(history.map((value) => ({ value })));
+	await db.editors.bulkAdd(editors.map((value) => ({ value })));
 }
 
 export async function getLocalSave() {
-	const data = (await db.save.toArray()).map(({ value }) => value);
-	const start = localStorage.getItem('saveStartCode');
-	return { data, start };
+	const history = (await db.history.toArray()).map(({ value }) => value);
+	const editors = (await db.editors.toArray()).map(({ value }) => value);
+	return { history, editors };
 }
 
 export async function deleteLocalSave() {
-	await db.save.clear();
-	localStorage.removeItem('saveSizeBytes');
-	localStorage.removeItem('saveStartCode');
+	await db.history.clear();
+	await db.editors.clear();
+	localStorage.removeItem('localSaveBytesSize');
 }
 
-export function getLocalSaveSize(): number | null {
-	return parseInt(localStorage.getItem('saveSizeBytes') ?? '');
+export function getLocalSaveSize() {
+	return localStorage.getItem('localSaveBytesSize');
 }

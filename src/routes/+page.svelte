@@ -118,14 +118,14 @@
 			component: {
 				ref: LoadDatabaseModal
 			},
-			response: async (state: { data: string[]; start: string } | undefined) => {
+			response: async (state: { history: string[]; editors: string[] } | undefined) => {
 				if (state) {
 					loading = true;
 					await new Promise((r) => setTimeout(r, 800));
 					await initDatabase();
 					try {
-						code = state.start;
-						for (const q of state.data) {
+						code = state.editors[0];
+						for (const q of state.history) {
 							queryHistory.push(q);
 							await db.query(q, {});
 						}
@@ -152,7 +152,7 @@
 				if (r) {
 					loading = true;
 					try {
-						await setLocalSave(queryHistory, code);
+						await setLocalSave(queryHistory, [code]);
 						triggerSuccessToast('Database saved!');
 					} catch (error) {
 						console.error(error);
