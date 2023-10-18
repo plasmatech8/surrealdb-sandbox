@@ -34,7 +34,7 @@
 			<i class="fas fa-terminal opacity-50 w-5" />
 			Query
 		</div>
-		<div class="opacity-20 p-4 text-sm font-semibold">
+		<div class="opacity-20 p-4 text-sm font-semibold whitespace-nowrap">
 			{#if ['macos', 'ios'].includes(getOS() ?? '')}
 				<kbd class="kbd text-xs">⌘</kbd> +
 				<kbd class="kbd text-xs">return</kbd>
