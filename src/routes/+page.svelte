@@ -170,7 +170,7 @@
 <svelte:head>
 	<title>SurrealDB Sandbox</title>
 	<meta
-		name="surrealdb-sandbox"
+		name="description"
 		content="Explore SurrealDB/SurrealQL in your browser. This online playground offers a query code editor and response viewer. It allows you to effortlessly test queries in a browser sandbox and experiment with your ideas."
 	/>
 </svelte:head>
