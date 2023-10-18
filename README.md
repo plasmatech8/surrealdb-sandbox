@@ -1,4 +1,4 @@
-# surrealdb-sandbox
+# SurrealDB Sandbox
 
 ![screenshot](static/screenshot.png)
 
