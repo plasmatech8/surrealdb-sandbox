@@ -20,6 +20,7 @@
 			class="btn btn-icon-sm hover:variant-soft-surface"
 			href="https://github.com/plasmatech8/surrealdb-sandbox"
 			target="_blank"
+			aria-label="Go to Github Repository for SurrealDB-Sandbox"
 		>
 			<i class="fa-brands fa-github h-5" />
 		</a>

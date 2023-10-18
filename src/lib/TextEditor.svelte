@@ -62,6 +62,7 @@
 			class="min-w-[17rem] p-5 pt-2 outline-none h-full"
 			on:keydown={handleHotkey}
 			placeholder="Write a query here..."
+			aria-label="Write a SurrealQL query"
 		/>
 	</div>
 </div>
