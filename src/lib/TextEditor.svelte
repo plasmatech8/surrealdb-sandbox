@@ -46,18 +46,23 @@
 		}
 	}
 
-	const notypecheck = (x: any) => x;
+	function handlePasteText(e: ClipboardEvent & { currentTarget: EventTarget & HTMLDivElement }) {
+		e.preventDefault();
+		const text = e.clipboardData?.getData('text/plain');
+		document.execCommand('insertText', false, text);
+	}
 </script>
 
 <div class="h-full relative overflow-clip" bind:clientHeight bind:clientWidth>
 	<div style="width: {clientWidth}px; height: {clientHeight}px;" class="absolute overflow-auto">
+		<!-- contenteditable="plaintext-only" does not work in Firefox, and also throws a type error in editor -->
 		<div
 			bind:this={editorEl}
 			style="white-space: pre;"
 			role="textbox"
 			tabindex="0"
 			contenteditable="true"
-			{...notypecheck({ contenteditable: 'plaintext-only' })}
+			on:paste={handlePasteText}
 			bind:innerText={value}
 			class="min-w-[17rem] p-5 pt-2 outline-none h-full"
 			on:keydown={handleHotkey}
