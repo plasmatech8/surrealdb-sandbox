@@ -2,7 +2,8 @@
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { deleteLocalSave, getLocalSaveSize, getLocalSave } from './localDatabaseSave';
 	import { browser } from '$app/environment';
-	import surrealDeal from '$lib/examples/surreal_deal_v1.surql?raw';
+	import * as surrealDealExample from '$lib/examples/surreal_deal';
+	import * as simpleAnimalsExample from '$lib/examples/simple_animals';
 
 	const modalStore = getModalStore();
 
@@ -15,32 +16,17 @@
 	}
 
 	async function loadSurrealDeal() {
-		const startCode = `
-select
-    *,
-     ->order.* as orders,
-     ->order->product.* as orders.products,
-    (select *, product.* from review where person = $parent.id) as reviews
-from person
-limit 1;
-`;
 		$modalStore[0].response?.({
-			history: [surrealDeal],
-			editors: [startCode]
+			history: surrealDealExample.history,
+			editors: surrealDealExample.editors
 		});
 		modalStore.close();
 	}
 
 	async function loadSimpleAnimals() {
-		const startCode = `
-update animal:dog content { sound: 'bark!' };
-update animal:cat content { sound: 'meow!' };
-
-select * from animal;
-`;
 		$modalStore[0].response?.({
-			history: [],
-			editors: [startCode]
+			history: simpleAnimalsExample.history,
+			editors: simpleAnimalsExample.editors
 		});
 		modalStore.close();
 	}
