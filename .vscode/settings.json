@@ -1,7 +1,5 @@
 {
-	"prettier.documentSelectors": [
-		"**/*.svelte"
-	],
+	"prettier.documentSelectors": ["**/*.svelte"],
 	"tailwindCSS.classAttributes": [
 		"class",
 		"accent",
@@ -113,5 +111,18 @@
 		"track",
 		"width",
 		"zIndex"
-	]
+	],
+
+	// Formatting
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+
+	// Editor
+	"editor.quickSuggestions": {
+		"strings": false
+	},
+
+	// Whitespace handling
+	"files.trimTrailingWhitespace": true,
+	"files.trimFinalNewlines": true
 }
