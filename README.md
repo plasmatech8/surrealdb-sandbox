@@ -1,10 +1,14 @@
 # SurrealDB Sandbox
 
-**SurrealDB Sandbox** is a web application that allows you to experiment with SurrealDB in your browser. It provides a SurrealQL editor for writing queries and a JSON response viewer to see the results.
+**SurrealDB Sandbox** is a web application that allows you to experiment with SurrealDB in your browser. 
+
+It provides a SurrealQL editor for writing queries and a JSON response viewer to see the results.
+
+A hassle-free, zero-setup playground for SurrealDB.
 
 ![screenshot](static/screenshot.png)
 
-<div align="center"><span style="display: block; margin: 20px auto; max-width: 600px">A browser-based playground for experimenting with SurrealDB.</span></div>
+<div align="center"><span style="display: block; margin: 20px auto; max-width: 600px">An offline browser-based playground for experimenting with SurrealDB.</span></div>
 
 
 ▶ [Try the Live Demo](https://surrealdb-sandbox.pages.dev/)
